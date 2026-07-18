@@ -1,0 +1,62 @@
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+*.secret
+*.key
+*.pem
+*.p12
+*.pfx
+
+# AWS credentials and local configuration
+.aws/
+aws-credentials*
+credentials.csv
+
+# Application credentials
+application-local.properties
+application-secrets.properties
+
+# Java and Maven build files
+target/
+*.war
+*.jar
+*.class
+
+# Logs
+*.log
+logs/
+catalina.out
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*~
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Terraform files are not part of this project
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Local test output
+test-output/
+coverage/
