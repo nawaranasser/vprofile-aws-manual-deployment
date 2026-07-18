@@ -1,0 +1,49 @@
+flowchart TD
+    User([Internet User])
+
+    subgraph AWS["AWS Cloud - us-east-1"]
+        subgraph VPC["VProfile VPC"]
+            IGW[Internet Gateway]
+
+            subgraph Public["Public Subnets - Two Availability Zones"]
+                ALB[Application Load Balancer<br/>HTTP Port 80]
+                NAT[NAT Gateway]
+            end
+
+            subgraph AppLayer["Private Application Subnet"]
+                Tomcat[Tomcat EC2<br/>VProfile Application<br/>Port 8080]
+            end
+
+            subgraph Backend["Private Backend Subnet"]
+                DB[(MariaDB EC2<br/>db.vprofile.internal<br/>Port 3306)]
+                Cache[Memcached EC2<br/>cache.vprofile.internal<br/>Port 11211]
+                MQ[RabbitMQ EC2<br/>mq.vprofile.internal<br/>Port 5672]
+            end
+
+            DNS[Route 53 Private Hosted Zone<br/>vprofile.internal]
+            SSM[AWS Systems Manager]
+        end
+    end
+
+    User -->|HTTP 80| IGW
+    IGW --> ALB
+    ALB -->|HTTP 8080| Tomcat
+
+    Tomcat -->|JDBC 3306| DB
+    Tomcat -->|TCP 11211| Cache
+    Tomcat -->|AMQP 5672| MQ
+
+    DNS -.Private DNS.-> DB
+    DNS -.Private DNS.-> Cache
+    DNS -.Private DNS.-> MQ
+
+    SSM -.Administrative Access.-> Tomcat
+    SSM -.Administrative Access.-> DB
+    SSM -.Administrative Access.-> Cache
+    SSM -.Administrative Access.-> MQ
+
+    Tomcat -.Outbound Internet.-> NAT
+    DB -.Package Downloads.-> NAT
+    Cache -.Package Downloads.-> NAT
+    MQ -.Package Downloads.-> NAT
+    NAT --> IGW
