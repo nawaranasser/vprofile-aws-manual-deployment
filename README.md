@@ -330,3 +330,25 @@ Do not store real passwords, AWS access keys, tokens, or other secrets inside a 
 ## License
 
 This project is available under the [MIT License](LICENSE).
+
+---
+
+## Architecture
+
+![VProfile Manual Deployment Architecture](diagrams/architecture.png)
+
+The architecture uses an internet-facing Application Load Balancer as the only public entry point.
+
+Tomcat and all backend services run inside private subnets.
+
+The application communicates with the backend services using Route 53 private DNS names:
+
+```text
+db.vprofile.internal
+cache.vprofile.internal
+mq.vprofile.internal
+```
+
+The editable Mermaid source is available here:
+
+[View Architecture Diagram Source](diagrams/architecture.mmd)
